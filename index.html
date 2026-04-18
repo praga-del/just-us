@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Just Us 🌙</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #0b0d12;
+    --surface: #161b22;
+    --surface2: #1e2530;
+    --border: #2a3340;
+    --p-bubble: #005c4b;
+    --n-bubble: #1e2530;
+    --accent: #00a884;
+    --accent2: #53bdeb;
+    --text: #e9edef;
+    --text2: #8696a0;
+    --text3: #667781;
+    --red: #ef4444;
+    --youtube: #ff0000;
+    --online: #00a884;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ─── LOGIN SCREEN ─── */
+  #loginScreen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, #0b0d12 0%, #0f1923 50%, #0b1a14 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 999;
+    gap: 0;
+  }
+  #loginScreen .hearts {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  }
+  #loginScreen .hearts span {
+    position: absolute; font-size: 1.5rem; opacity: 0.08;
+    animation: floatHeart 8s infinite linear;
+  }
+  @keyframes floatHeart {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0.08; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px 40px;
+    width: 360px;
+    box-shadow: var(--shadow), 0 0 80px rgba(0,168,132,0.08);
+    display: flex; flex-direction: column; align-items: center; gap: 24px;
+    position: relative;
+    animation: slideUp 0.6s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .login-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--accent), #008f72);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 0 40px rgba(0,168,132,0.35);
+  }
+  .login-title {
+    font-size: 1.7rem; font-weight: 800;
+    background: linear-gradient(135deg, #e9edef, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+  .login-sub { font-size: 0.82rem; color: var(--text2); margin-top: -16px; }
+
+  .user-select {
+    display: flex; gap: 10px; width: 100%;
+  }
+  .user-btn {
+    flex: 1; padding: 12px 8px;
+    border: 2px solid var(--border);
+    background: var(--surface2);
+    border-radius: 14px;
+    color: var(--text2);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .user-btn span.avatar { font-size: 1.5rem; }
+  .user-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,168,132,0.08); }
+  .user-btn.selected { border-color: var(--accent); color: var(--accent); background: rgba(0,168,132,0.12); }
+
+  .login-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: var(--accent); }
+  .login-input.error { border-color: var(--red); }
+
+  .login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), #008f72);
+    border: none; border-radius: 14px;
+    padding: 14px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 20px rgba(0,168,132,0.3);
+  }
+  .login-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,168,132,0.4); }
+  .login-btn:active { transform: scale(0.98); }
+  .login-err { color: var(--red); font-size: 0.8rem; font-weight: 600; display: none; }
+
+  /* ─── MAIN CHAT ─── */
+  #chatApp {
+    display: none;
+    width: 100vw; height: 100vh;
+    flex-direction: column;
+  }
+  #chatApp.show { display: flex; }
+
+  .chat-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px;
+    position: relative; z-index: 10;
+  }
+  .header-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #53bdeb);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: 800; color: #fff;
+    position: relative; flex-shrink: 0;
+  }
+  .header-avatar::after {
+    content:''; position:absolute; bottom:1px; right:1px;
+    width:10px; height:10px; background: var(--online);
+    border-radius:50%; border:2px solid var(--surface);
+  }
+  .header-info { flex: 1; }
+  .header-name { font-size: 1rem; font-weight: 800; color: var(--text); }
+  .header-status { font-size: 0.72rem; color: var(--online); font-weight: 600; }
+  .header-actions { display: flex; gap: 4px; }
+  .header-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: none; background: transparent; color: var(--text2);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all 0.15s;
+  }
+  .header-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .messages-wrap {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    padding: 12px 16px 8px;
+    background: var(--bg);
+    background-image: 
+      radial-gradient(circle at 20% 20%, rgba(0,168,132,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(83,189,235,0.03) 0%, transparent 50%);
+    scroll-behavior: smooth;
+  }
+  .messages-wrap::-webkit-scrollbar { width: 4px; }
+  .messages-wrap::-webkit-scrollbar-track { background: transparent; }
+  .messages-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .date-divider {
+    text-align: center; margin: 12px 0;
+  }
+  .date-divider span {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text2); font-size: 0.72rem; font-weight: 700;
+    padding: 4px 14px; border-radius: 20px;
+  }
+
+  .msg-row {
+    display: flex; margin-bottom: 4px;
+    animation: msgIn 0.25s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .msg-row.out { justify-content: flex-end; }
+  .msg-row.in  { justify-content: flex-start; }
+
+  .bubble {
+    max-width: 68%; padding: 8px 12px 6px;
+    border-radius: 10px;
+    font-size: 0.9rem; line-height: 1.45;
+    position: relative; word-break: break-word;
+  }
+  .msg-row.out .bubble {
+    background: var(--p-bubble);
+    border-top-right-radius: 3px;
+    color: var(--text);
+  }
+  .msg-row.in .bubble {
+    background: var(--n-bubble);
+    border-top-left-radius: 3px;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .bubble-meta {
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 4px; margin-top: 2px;
+  }
+  .bubble-time { font-size: 0.68rem; color: var(--text3); }
+  .bubble-tick { font-size: 0.75rem; color: var(--accent2); }
+
+  .yt-card {
+    background: #0f0f0f;
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 300px;
+    margin-bottom: 4px;
+  }
+  .yt-card iframe {
+    width: 100%; height: 168px; display: block; border: none;
+  }
+  .yt-card-info {
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .yt-icon { color: var(--youtube); font-size: 1rem; }
+  .yt-title { font-size: 0.78rem; color: #aaa; font-weight: 600; line-height: 1.3; }
+
+  .input-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 12px;
+    display: flex; align-items: flex-end; gap: 8px;
+    position: relative;
+  }
+  .input-wrap {
+    flex: 1; display: flex; align-items: flex-end;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 8px 14px;
+    gap: 8px;
+    transition: border-color 0.2s;
+  }
+  .input-wrap:focus-within { border-color: var(--accent); }
+  .input-emoji {
+    background: none; border: none; color: var(--text2);
+    font-size: 1.3rem; cursor: pointer; padding: 0; line-height: 1;
+    flex-shrink: 0; align-self: flex-end; margin-bottom: 1px;
+    transition: transform 0.15s;
+  }
+  .input-emoji:hover { transform: scale(1.15); }
+  #msgInput {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--text); font-family: 'Nunito', sans-serif;
+    font-size: 0.92rem; resize: none; max-height: 100px;
+    line-height: 1.4; min-height: 22px;
+    scrollbar-width: none;
+  }
+  #msgInput::placeholder { color: var(--text3); }
+  .attach-btn {
+    background: none; border: none; color: var(--text2);
+    font-size: 1.2rem; cursor: pointer; padding: 0; line-height: 1;
+    flex-shrink: 0; align-self: flex-end; margin-bottom: 1px;
+    transition: color 0.15s;
+  }
+  .attach-btn:hover { color: var(--accent); }
+  .send-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #008f72);
+    border: none; color: #fff; font-size: 1.1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; box-shadow: 0 2px 12px rgba(0,168,132,0.4);
+    transition: all 0.2s;
+  }
+  .send-btn:hover { transform: scale(1.06); box-shadow: 0 4px 20px rgba(0,168,132,0.5); }
+  .send-btn:active { transform: scale(0.95); }
+
+  .yt-panel {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .yt-panel-box {
+    background: #0f0f0f;
+    border: 1px solid #333;
+    border-radius: 20px;
+    overflow: hidden;
+    width: min(90vw, 560px);
+    animation: slideUp 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .yt-panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    background: #161b22;
+    border-bottom: 1px solid #333;
+  }
+  .yt-panel-head span { font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+  .yt-close { background: none; border: none; color: #aaa; font-size: 1.3rem; cursor: pointer; }
+  .yt-url-row {
+    display: flex; gap: 8px; padding: 14px;
+  }
+  .yt-url-input {
+    flex: 1; background: #1e2530; border: 1.5px solid #333;
+    border-radius: 10px; padding: 10px 14px;
+    color: #e9edef; font-family: 'Nunito', sans-serif; font-size: 0.88rem; outline: none;
+  }
+  .yt-url-input:focus { border-color: var(--youtube); }
+  .yt-send-btn {
+    background: var(--youtube); border: none; border-radius: 10px;
+    padding: 10px 18px; color: #fff; font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem; font-weight: 800; cursor: pointer; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .yt-send-btn:hover { background: #cc0000; }
+  .yt-preview { padding: 0 14px 14px; }
+  .yt-preview iframe { width: 100%; height: 280px; border: none; border-radius: 12px; }
+  .yt-err { color: var(--red); font-size: 0.78rem; padding: 0 14px 10px; display: none; }
+
+  .emoji-picker {
+    position: absolute; bottom: 70px; left: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 10px 12px;
+    display: none; flex-wrap: wrap; gap: 4px;
+    max-width: 240px; box-shadow: var(--shadow);
+    z-index: 100;
+  }
+  .emoji-picker.show { display: flex; }
+  .e-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 4px; border-radius: 8px; transition: background 0.1s; }
+  .e-btn:hover { background: var(--surface2); }
+
+  .logout-hint {
+    font-size: 0.7rem; color: var(--text3); padding: 4px 12px 6px;
+    text-align: center; cursor: pointer;
+  }
+  .logout-hint:hover { color: var(--text2); }
+
+  .user-label {
+    font-size: 0.7rem; color: var(--text3); font-weight: 700;
+    margin-bottom: 2px; padding: 0 4px;
+  }
+  .msg-row.out .user-label { text-align: right; }
+</style>
+</head>
+<body>
+
+<!-- ─── LOGIN ─── -->
+<div id="loginScreen">
+  <div class="hearts" id="heartsContainer"></div>
+  <div class="login-card">
+    <div class="login-logo">💑</div>
+    <div class="login-title">Just Us</div>
+    <div class="login-sub">your private little world 🌙</div>
+
+    <div class="user-select">
+      <button class="user-btn" id="btnP" onclick="selectUser('Pragadheesh')">
+        <span class="avatar">🧑‍💻</span>
+        Pragadheesh
+      </button>
+      <button class="user-btn" id="btnN" onclick="selectUser('Nandhitha')">
+        <span class="avatar">👩‍🎨</span>
+        Nandhitha
+      </button>
+    </div>
+
+    <input class="login-input" id="pwInput" type="password" placeholder="Enter your password…" oninput="clearErr()" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-err" id="loginErr">❌ Wrong password. Try again!</div>
+    <button class="login-btn" onclick="doLogin()">Enter Our Space ✨</button>
+  </div>
+</div>
+
+<!-- ─── CHAT APP ─── -->
+<div id="chatApp">
+  <div class="chat-header">
+    <div class="header-avatar" id="headerAvatar">💑</div>
+    <div class="header-info">
+      <div class="header-name">Just Us 🌙</div>
+      <div class="header-status">● online</div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" title="Share YouTube" onclick="openYT()">▶️</button>
+      <button class="header-btn" title="More">⋮</button>
+    </div>
+  </div>
+
+  <div class="messages-wrap" id="messagesWrap">
+    <div class="date-divider"><span>Today</span></div>
+  </div>
+
+  <!-- Emoji Picker -->
+  <div class="emoji-picker" id="emojiPicker">
+    <button class="e-btn" onclick="addEmoji('😊')">😊</button>
+    <button class="e-btn" onclick="addEmoji('😂')">😂</button>
+    <button class="e-btn" onclick="addEmoji('🥰')">🥰</button>
+    <button class="e-btn" onclick="addEmoji('😍')">😍</button>
+    <button class="e-btn" onclick="addEmoji('🤩')">🤩</button>
+    <button class="e-btn" onclick="addEmoji('😘')">😘</button>
+    <button class="e-btn" onclick="addEmoji('💕')">💕</button>
+    <button class="e-btn" onclick="addEmoji('❤️')">❤️</button>
+    <button class="e-btn" onclick="addEmoji('💌')">💌</button>
+    <button class="e-btn" onclick="addEmoji('✨')">✨</button>
+    <button class="e-btn" onclick="addEmoji('🌙')">🌙</button>
+    <button class="e-btn" onclick="addEmoji('🎵')">🎵</button>
+    <button class="e-btn" onclick="addEmoji('🎬')">🎬</button>
+    <button class="e-btn" onclick="addEmoji('🍕')">🍕</button>
+    <button class="e-btn" onclick="addEmoji('🌸')">🌸</button>
+    <button class="e-btn" onclick="addEmoji('🦋')">🦋</button>
+    <button class="e-btn" onclick="addEmoji('🔥')">🔥</button>
+    <button class="e-btn" onclick="addEmoji('💯')">💯</button>
+    <button class="e-btn" onclick="addEmoji('🫶')">🫶</button>
+    <button class="e-btn" onclick="addEmoji('🥳')">🥳</button>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-wrap">
+      <button class="input-emoji" onclick="toggleEmoji()">😊</button>
+      <textarea id="msgInput" rows="1" placeholder="Message…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="attach-btn" onclick="openYT()" title="Share YouTube video">▶</button>
+    </div>
+    <button class="send-btn" onclick="sendMsg()">➤</button>
+  </div>
+  <div class="logout-hint" onclick="logout()">tap to switch user</div>
+</div>
+
+<!-- ─── YOUTUBE PANEL ─── -->
+<div class="yt-panel" id="ytPanel" style="display:none" onclick="if(event.target===this)closeYT()">
+  <div class="yt-panel-box">
+    <div class="yt-panel-head">
+      <span>▶️ &nbsp;Share a YouTube Video</span>
+      <button class="yt-close" onclick="closeYT()">✕</button>
+    </div>
+    <div class="yt-url-row">
+      <input class="yt-url-input" id="ytUrl" placeholder="Paste YouTube link…" oninput="previewYT()" onkeydown="if(event.key==='Enter')sendYT()">
+      <button class="yt-send-btn" onclick="sendYT()">Send 🎬</button>
+    </div>
+    <div class="yt-err" id="ytErr">⚠ Please enter a valid YouTube link</div>
+    <div class="yt-preview" id="ytPreview"></div>
+  </div>
+</div>
+
+<script>
+  const USERS = {
+    Pragadheesh: { pw: 'panda', emoji: '🧑‍💻' },
+    Nandhitha:   { pw: 'panda', emoji: '👩‍🎨' }
+  };
+  let currentUser = null;
+  let selectedUser = null;
+  let messages = [];
+
+  try { messages = JSON.parse(localStorage.getItem('justus_msgs') || '[]'); } catch(e){}
+
+  // Floating hearts
+  const hc = document.getElementById('heartsContainer');
+  const emojis = ['💕','✨','🌙','💫','🌸','💖'];
+  for(let i=0;i<14;i++){
+    const s = document.createElement('span');
+    s.textContent = emojis[i%emojis.length];
+    s.style.left = Math.random()*100+'%';
+    s.style.animationDelay = Math.random()*8+'s';
+    s.style.animationDuration = (6+Math.random()*6)+'s';
+    s.style.fontSize = (1+Math.random()*1.2)+'rem';
+    hc.appendChild(s);
+  }
+
+  function selectUser(name) {
+    selectedUser = name;
+    document.getElementById('btnP').classList.toggle('selected', name==='Pragadheesh');
+    document.getElementById('btnN').classList.toggle('selected', name==='Nandhitha');
+    document.getElementById('pwInput').focus();
+  }
+  function clearErr() {
+    document.getElementById('loginErr').style.display = 'none';
+    document.getElementById('pwInput').classList.remove('error');
+  }
+  function doLogin() {
+    if(!selectedUser) { showErr('Please choose who you are 👆'); return; }
+    const pw = document.getElementById('pwInput').value;
+    if(pw === USERS[selectedUser].pw) {
+      currentUser = selectedUser;
+      const ls = document.getElementById('loginScreen');
+      ls.style.transition = 'opacity 0.4s';
+      ls.style.opacity = '0';
+      setTimeout(()=>{
+        ls.style.display = 'none';
+        document.getElementById('chatApp').classList.add('show');
+        renderMessages();
+        scrollBottom();
+      }, 400);
+    } else {
+      showErr('❌ Wrong password. Try again!');
+    }
+  }
+  function showErr(msg) {
+    const el = document.getElementById('loginErr');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('pwInput').classList.add('error');
+  }
+  function logout() {
+    currentUser = null; selectedUser = null;
+    const ls = document.getElementById('loginScreen');
+    ls.style.opacity = '1';
+    ls.style.display = 'flex';
+    ls.style.transition = '';
+    document.getElementById('chatApp').classList.remove('show');
+    document.getElementById('pwInput').value = '';
+    document.getElementById('btnP').classList.remove('selected');
+    document.getElementById('btnN').classList.remove('selected');
+    clearErr();
+  }
+
+  function now() {
+    const d = new Date();
+    return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  }
+
+  function renderMessages() {
+    const wrap = document.getElementById('messagesWrap');
+    const dateDivider = wrap.querySelector('.date-divider');
+    wrap.innerHTML = '';
+    wrap.appendChild(dateDivider);
+    messages.forEach(m => appendBubble(m, false));
+  }
+
+  function appendBubble(m, animate=true) {
+    const wrap = document.getElementById('messagesWrap');
+    const isOut = m.sender === currentUser;
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + (isOut ? 'out' : 'in');
+    if(!animate) row.style.animation = 'none';
+
+    if(!isOut) {
+      const label = document.createElement('div');
+      label.style.display='flex'; label.style.flexDirection='column';
+      const nameEl = document.createElement('div');
+      nameEl.className='user-label';
+      nameEl.textContent = m.sender;
+      label.appendChild(nameEl);
+      label.appendChild(buildBubble(m, isOut));
+      row.appendChild(label);
+    } else {
+      row.appendChild(buildBubble(m, isOut));
+    }
+    wrap.appendChild(row);
+  }
+
+  function buildBubble(m, isOut) {
+    const bub = document.createElement('div');
+    bub.className = 'bubble';
+    if(m.type === 'youtube') {
+      const card = document.createElement('div');
+      card.className = 'yt-card';
+      card.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.videoId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="yt-card-info"><span class="yt-icon">▶</span><span class="yt-title">YouTube Video</span></div>`;
+      bub.style.cssText = 'padding:0;background:transparent;border:none;';
+      bub.appendChild(card);
+    } else {
+      const textEl = document.createElement('div');
+      textEl.textContent = m.text;
+      bub.appendChild(textEl);
+    }
+    const meta = document.createElement('div');
+    meta.className = 'bubble-meta';
+    meta.innerHTML = `<span class="bubble-time">${m.time}</span>${isOut ? '<span class="bubble-tick">✓✓</span>' : ''}`;
+    bub.appendChild(meta);
+    return bub;
+  }
+
+  function sendMsg() {
+    const inp = document.getElementById('msgInput');
+    const text = inp.value.trim();
+    if(!text) return;
+    const msg = { sender: currentUser, text, time: now(), type: 'text', id: Date.now() };
+    messages.push(msg);
+    saveMessages();
+    appendBubble(msg, true);
+    inp.value = '';
+    inp.style.height = 'auto';
+    scrollBottom();
+    document.getElementById('emojiPicker').classList.remove('show');
+  }
+
+  function handleKey(e) {
+    if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+  }
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+  }
+  function scrollBottom() {
+    const w = document.getElementById('messagesWrap');
+    setTimeout(()=>{ w.scrollTop = w.scrollHeight; }, 50);
+  }
+  function saveMessages() {
+    try { localStorage.setItem('justus_msgs', JSON.stringify(messages.slice(-200))); } catch(e){}
+  }
+
+  function toggleEmoji() {
+    document.getElementById('emojiPicker').classList.toggle('show');
+  }
+  function addEmoji(e) {
+    const inp = document.getElementById('msgInput');
+    inp.value += e;
+    inp.focus();
+  }
+  document.addEventListener('click', e => {
+    if(!e.target.closest('.emoji-picker') && !e.target.closest('.input-emoji')) {
+      document.getElementById('emojiPicker').classList.remove('show');
+    }
+  });
+
+  function openYT() {
+    document.getElementById('ytPanel').style.display = 'flex';
+    document.getElementById('ytUrl').value = '';
+    document.getElementById('ytPreview').innerHTML = '';
+    document.getElementById('ytErr').style.display = 'none';
+    setTimeout(()=>document.getElementById('ytUrl').focus(), 100);
+  }
+  function closeYT() {
+    document.getElementById('ytPanel').style.display = 'none';
+  }
+  function getVideoId(url) {
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+      /youtube\.com\/shorts\/([^&\n?#]+)/
+    ];
+    for(const p of patterns) {
+      const m = url.match(p);
+      if(m) return m[1];
+    }
+    return null;
+  }
+  function previewYT() {
+    const url = document.getElementById('ytUrl').value.trim();
+    const vid = getVideoId(url);
+    const prev = document.getElementById('ytPreview');
+    const err = document.getElementById('ytErr');
+    if(vid) {
+      err.style.display = 'none';
+      prev.innerHTML = `<iframe src="https://www.youtube.com/embed/${vid}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+      prev.innerHTML = '';
+      if(url.length > 5) err.style.display = 'block';
+    }
+  }
+  function sendYT() {
+    const url = document.getElementById('ytUrl').value.trim();
+    const vid = getVideoId(url);
+    if(!vid) { document.getElementById('ytErr').style.display = 'block'; return; }
+    const msg = { sender: currentUser, type: 'youtube', videoId: vid, time: now(), id: Date.now() };
+    messages.push(msg);
+    saveMessages();
+    appendBubble(msg, true);
+    closeYT();
+    scrollBottom();
+  }
+</script>
+</body>
+</html>
